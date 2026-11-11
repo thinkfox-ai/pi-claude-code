@@ -1025,6 +1025,11 @@ class ClaudeProcess {
         JSON.stringify(mcp),
       ];
 
+      // Claude Code stamps per-turn effort from its CLI state, independently
+      // of the top-level output_config supplied through the extra body.
+      const effort = (input.extraBody.output_config as { effort?: unknown } | undefined)?.effort;
+      if (typeof effort === "string") args.push("--effort", effort);
+
       child = spawnCommand(command, args, {
         // Claude Code tells the model its process cwd. Keep transport files
         // private while exposing Pi's real working directory to the model.
